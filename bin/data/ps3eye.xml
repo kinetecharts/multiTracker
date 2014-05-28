@@ -1,0 +1,15 @@
+<PS3Eye>
+	<Auto_Gain_and_Shutter>0</Auto_Gain_and_Shutter>
+	<Gain>0.5</Gain>
+	<Shutter>0.5</Shutter>
+	<Gamma>0.5</Gamma>
+	<Brightness>0.5</Brightness>
+	<Contrast>0.5</Contrast>
+	<Hue>0.5</Hue>
+	<Flicker_Type>0</Flicker_Type>
+	<White_Balance_Mode>4</White_Balance_Mode>
+	<LED>1</LED>
+	<Blob_Min_Radius>40</Blob_Min_Radius>
+	<Blob_Max_Radius>280</Blob_Max_Radius>
+<PS3Eye/>
+</PS3Eye>
