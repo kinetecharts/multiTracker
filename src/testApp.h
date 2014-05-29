@@ -74,6 +74,19 @@ public:
     void onMaxRadiusChange(float & value);
     void onLearningTimeChange(float & value);
     
+    ofParameter<bool> bSendCenters = false;
+    ofParameter<bool> bSendTargetDetail = false;
+    ofParameter<bool> bSendContours = false;
+    ofParameter<int> skipSample = 10;
+    int skiped = 0;
+//    bool bSendCenters = true;
+//    void onSendCenters(bool & value);
+//    bool bSendTargetDetail = false;
+//    void onSendTargetDetail(bool & value);
+//    bool bSendContours = false;
+//    void onSendContours(bool & value);
+
+    
 // GUI
 	ofxPanel			gui;
 	void				setupGui();
@@ -97,4 +110,5 @@ public:
 //OSC
     ofxOscSender sender;
     void oscSendCur(Glow & follower);
+    void oscSendContour(int label, const ofPolyline & polyline);
 };

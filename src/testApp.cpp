@@ -41,8 +41,8 @@ void Glow::draw() {
 	ofSetColor(255);
 	ofDrawBitmapString(ofToString(label), cur);
 	ofPopStyle();
-}
 
+}
 void Glow::report(){
     if(startedDying>0)cout<<"Dead"<<endl;
     cout<<label<<": "<< cur[0]<<", "<<cur[1]<<endl;
@@ -171,11 +171,25 @@ void testApp::draw() {
     thresholded.draw(0,0);
 //	movie.draw(0, 0);
 	contourFinder.draw();
-	vector<Glow>& followers = tracker.getFollowers();
-	for(int i = 0; i < followers.size(); i++) {
-		followers[i].draw();
-        oscSendCur(followers[i]);
-	}
+
+    vector<Glow>& followers = tracker.getFollowers();
+    if(bSendCenters && (skiped ==0) ){
+        for(int i = 0; i < followers.size(); i++) {
+            followers[i].draw();
+            oscSendCur(followers[i]);
+        }
+    }
+    
+    if(bSendTargetDetail && (skiped ==0)){
+        const vector<ofPolyline>& contours = contourFinder.getPolylines();
+        for(int i=0; i< contours.size(); i++){
+            int label = contourFinder.getLabel(i);
+            oscSendContour(label, contours[i]);
+        }
+    }
+    
+    skiped++;
+    if(skiped > skipSample) skiped = 0;
     
     stringstream reportStream;
     if(bUsePS3Eye){
@@ -208,6 +222,19 @@ void testApp::setupGui() {
     autoGainAndShutter->setup("Auto Gain and Shutter", false);
     autoGainAndShutter->addListener(this, &testApp::onAutoGainAndShutterChange);
     gui.add(autoGainAndShutter);
+
+    gui.add(bSendCenters.set("Send Centers", false));
+    gui.add(bSendTargetDetail.set("Send Target Detail", false));
+    gui.add(bSendContours.set("Send Contours", false));
+    gui.add(skipSample.set("Skip Sample", 10, 0, 60));
+
+//    ofxToggle * sendCenters = new ofxToggle();
+//    sendCenters->setup("Send Centers", true);
+//    sendCenters->addListener(this, &testApp::onSendCenters);
+//    gui.add(sendCenters);
+    
+    
+    
     
     ofxFloatSlider * gain = new ofxFloatSlider();
     gain->setup("Gain", 0.5, 0.0, 1.0);
@@ -276,6 +303,8 @@ void testApp::setupGui() {
     bool b;
     float f;
     int i;
+//    b = gui.getToggle("Send Centers");
+//    onSendCenters(b);
     b = gui.getToggle("Auto Gain and Shutter");
     onAutoGainAndShutterChange(b);
     f = gui.getFloatSlider("Gain");
@@ -342,7 +371,7 @@ void testApp::setupGui() {
 void testApp::oscSendCur(Glow & follower){
 //    cout<<"sending Cur: cam Gain is: "<<camGain<<" "<<endl;
     //        followers[i].report();
-//    cout<<follower.getLabel()<<": "<<follower.getCur()[0]<<", "<<follower.getCur()[1]<<endl;
+    cout<<follower.getLabel()<<": "<<follower.getCur()[0]<<", "<<follower.getCur()[1]<<endl;
     ofxOscMessage m;
     stringstream ss;
     ss<<"/cur";
@@ -350,6 +379,34 @@ void testApp::oscSendCur(Glow & follower){
     m.addIntArg(follower.getLabel());
     m.addFloatArg(follower.getCur()[0]);
     m.addFloatArg(follower.getCur()[1]);
+    sender.sendMessage(m);
+    
+//    follower.
+}
+
+void testApp::oscSendContour(int label, const ofPolyline &polyline){
+    ofxOscMessage m;
+    stringstream ss;
+    ss<<"/contour";
+    m.setAddress(ss.str());
+    
+    int size = polyline.size();
+    m.addIntArg(label);
+    m.addIntArg(size);
+    cout<<"contour: "<<label<<" size: "<<size<<endl;
+    const ofRectangle& rect = polyline.getBoundingBox();
+    m.addIntArg(rect.getTopLeft().x);
+    m.addIntArg(rect.getTopLeft().y);
+    m.addIntArg(rect.getBottomRight().x);
+    m.addIntArg(rect.getBottomRight().y);
+    
+    if(bSendContours){
+        const vector<ofPoint> points = polyline.getVertices();
+        for(int i=0; i< size; i++){
+            m.addFloatArg(points[i].x);
+            m.addFloatArg(points[i].y);
+        }
+    }
     sender.sendMessage(m);
 }
 
@@ -370,7 +427,16 @@ void testApp::onAutoGainAndShutterChange(bool & value){
     bPs3AutoExposure = value;
     cout<<"autoexposure is "<<bPs3AutoExposure<<endl;
 }
+//void testApp::onSendCenters(bool &value){
+//    bSendCenters = value;
+//}
 
+//void testApp::onSendTargetDetail(bool &value){
+//    bSendTargetDetail = value;
+//}
+//void testApp::onSendContours(bool &value){
+//    bSendContours = value;
+//}
 //--------------------------------------------------------------
 void testApp::onGainChange(float & value){
     cout<<"calling gain change"<<endl;
@@ -385,7 +451,8 @@ void testApp::onGainChange(float & value){
 //--------------------------------------------------------------
 void testApp::onShutterChange(float & value){
 	// Only set if auto gain & shutter is off
-	if(!(bool&)gui.getToggle("Auto Gain and Shutter")){
+//	if(!(bool&)gui.getToggle("Auto Gain and Shutter")){
+    if(!bPs3AutoExposure){
         ps3Eye.setShutter(value);
 	}
 }
