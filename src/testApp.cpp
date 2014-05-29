@@ -53,6 +53,7 @@ ofVec2f Glow::getCur(){
 }
 void testApp::setup() {
 	ofSetVerticalSync(true);
+    ofSetFrameRate(30);
 	ofBackground(0);
     
     numPS3Eye = ps3Eye.listDevices().size();
@@ -127,10 +128,8 @@ void testApp::update() {
             background.update(ps3Eye, thresholded);
         else
             background.update(cam, thresholded);
-//        thresholded.update();
-        
-//        thresholded.resize(fieldW, fieldW);
-		blur(thresholded, 5);
+        thresholded.update();
+		blur(thresholded, 10);
         thresholded.update();
 		contourFinder.findContours(thresholded);
 		tracker.track(contourFinder.getBoundingRects());
@@ -169,7 +168,6 @@ void testApp::draw() {
         cam.draw(camW,0);
     
     thresholded.draw(0,0);
-//	movie.draw(0, 0);
 	contourFinder.draw();
 
     vector<Glow>& followers = tracker.getFollowers();
