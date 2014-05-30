@@ -34,6 +34,9 @@ public:
 	void draw();
     
     void keyPressed(int key);
+    
+    ofBaseVideoGrabber * camPointer;
+
 //PS3 Eye
     ofxMacamPs3Eye ps3Eye;
     int numPS3Eye;
@@ -57,6 +60,10 @@ public:
 	ofxCv::ContourFinder contourFinder;
 	ofxCv::RectTrackerFollower<Glow> tracker;
 
+//    Flow
+    ofxCv::FlowFarneback flow;
+    ofMesh mesh;
+    int stepSize, xSteps, ySteps;
     
     bool bPs3AutoExposure = false;
     void onAutoGainAndShutterChange(bool & value);

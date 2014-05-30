@@ -76,6 +76,7 @@ void testApp::setup() {
         ps3Eye.setHue(camHue);
         ps3Eye.setFlicker(2);/* 0 - no flicker, 1 - 50hz, 2 - 60hz */
         ps3Eye.setWhiteBalance(2); /* 1 - linear, 2 - indoor, 3 - outdoor, 4 - auto */
+        camPointer = &ps3Eye;
     }else{
         numCam=cam.listDevices().size();
         int buildinCam=0;
@@ -90,6 +91,7 @@ void testApp::setup() {
 
         cam.setDeviceID(buildinCam);
         cam.initGrabber(camW, camH);
+        camPointer = &cam;
     }
     
     background.setLearningTime(learnTime); //default to 900
@@ -106,6 +108,33 @@ void testApp::setup() {
 	tracker.setPersistence(15);
 	// an object can move up to 50 pixels per frame
 	tracker.setMaximumDistance(50);
+
+// Flow
+    mesh.setMode(OF_PRIMITIVE_TRIANGLES);
+    stepSize = 16;
+    ySteps = cam.getHeight() / stepSize;
+    xSteps = cam.getWidth() / stepSize;
+    for(int y=0; y< ySteps; y++){
+        for(int x=0; x<xSteps; x++){
+            mesh.addVertex(ofVec2f(x*stepSize, y*stepSize));
+            mesh.addTexCoord(ofVec2f(x*stepSize, y*stepSize));
+        }
+    }
+    for(int y = 0; y + 1 < ySteps; y++) {
+		for(int x = 0; x + 1 < xSteps; x++) {
+			int nw = y * xSteps + x;
+			int ne = nw + 1;
+			int sw = nw + xSteps;
+			int se = sw + 1;
+			mesh.addIndex(nw);
+			mesh.addIndex(ne);
+			mesh.addIndex(se);
+			mesh.addIndex(nw);
+			mesh.addIndex(se);
+			mesh.addIndex(sw);
+		}
+	}
+
     
     setupGui();
     cout<<oscHost<<endl;
@@ -114,21 +143,9 @@ void testApp::setup() {
 
 }
 void testApp::update() {
-    bool bFrameNew = false;
-    if(bUsePS3Eye){
-        ps3Eye.update();
-        bFrameNew = ps3Eye.isFrameNew();
-    }
-    else{
-        cam.update();
-        bFrameNew = cam.isFrameNew();
-    }
-    
-    if(bFrameNew){
-        if(bUsePS3Eye)
-            background.update(ps3Eye, thresholded);
-        else
-            background.update(cam, thresholded);
+    camPointer->update();
+    if(camPointer->isFrameNew()){
+        background.update(*camPointer, thresholded);
         thresholded.update();
 		blur(thresholded, 10);
         thresholded.update();
@@ -137,21 +154,6 @@ void testApp::update() {
     }
     
     
-//    if(camGain!=camGainSave){
-//        ps3Eye.setGain(camGain);
-//        camGainSave = camGain;
-//        cout<<"gain changed to "<<camGain<<endl;
-//    }
-//    if(camShutter!=camShutterSave){
-//        ps3Eye.setShutter(camShutter);
-//        camShutterSave = camShutter;
-//        cout<<"shutter changed to "<<camShutter<<endl;
-//    }
-//    if(learnTime!=learnTimeSave){
-//        background.setLearningTime(learnTime);
-//        learnTimeSave = learnTime;
-//        cout<<"Learn time is "<<learnTime<<endl;
-//    }
 
     //	movie.update();
 //	if(movie.isFrameNew()) {
