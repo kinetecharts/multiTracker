@@ -89,7 +89,7 @@ void testApp::setup() {
         }
 
         cam.setDeviceID(buildinCam);
-        cam.initGrabber(fieldW, fieldH);
+        cam.initGrabber(camW, camH);
     }
     
     background.setLearningTime(learnTime); //default to 900
@@ -108,8 +108,9 @@ void testApp::setup() {
 	tracker.setMaximumDistance(50);
     
     setupGui();
+    cout<<oscHost<<endl;
     
-    sender.setup(HOST, PORT);
+    sender.setup(oscHost, PORT);
 
 }
 void testApp::update() {
@@ -225,7 +226,8 @@ void testApp::setupGui() {
     gui.add(bSendTargetDetail.set("Send Target Detail", false));
     gui.add(bSendContours.set("Send Contours", false));
     gui.add(skipSample.set("Skip Sample", 10, 0, 60));
-
+    gui.add(oscHost.set("OSC Host", "127.0.0.1"));
+    
 //    ofxToggle * sendCenters = new ofxToggle();
 //    sendCenters->setup("Send Centers", true);
 //    sendCenters->addListener(this, &testApp::onSendCenters);

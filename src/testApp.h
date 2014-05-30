@@ -6,7 +6,7 @@
 #include "ofxGui.h"
 #include "ofxOsc.h"
 
-#define HOST "localhost"
+//#define HOST "localhost"
 #define PORT 3333
 
 class Glow : public ofxCv::RectFollower {
@@ -78,6 +78,8 @@ public:
     ofParameter<bool> bSendTargetDetail = false;
     ofParameter<bool> bSendContours = false;
     ofParameter<int> skipSample = 10;
+    ofParameter <string> oscHost;
+    
     int skiped = 0;
 //    bool bSendCenters = true;
 //    void onSendCenters(bool & value);
