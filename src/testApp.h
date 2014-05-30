@@ -5,6 +5,7 @@
 #include "ofxMacamPs3Eye.h"
 #include "ofxGui.h"
 #include "ofxOsc.h"
+#include "ofxMIOFlowGLSL.h"
 
 //#define HOST "localhost"
 #define PORT 3333
@@ -61,6 +62,7 @@ public:
 	ofxCv::RectTrackerFollower<Glow> tracker;
 
 //    Flow
+    ofxMioFlowGLSL mioFlow;
     ofxCv::FlowFarneback flow;
     ofMesh mesh;
     int stepSize=32;

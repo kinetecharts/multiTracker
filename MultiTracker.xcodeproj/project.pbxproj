@@ -37,6 +37,8 @@
 		3574C9C9193551DD00D660A4 /* ofxSlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3574C9BE193551DD00D660A4 /* ofxSlider.cpp */; };
 		3574C9CA193551DD00D660A4 /* ofxSliderGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3574C9C0193551DD00D660A4 /* ofxSliderGroup.cpp */; };
 		3574C9CB193551DD00D660A4 /* ofxToggle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3574C9C2193551DD00D660A4 /* ofxToggle.cpp */; };
+		35BC1D661938946500ED7488 /* FlowShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 35BC1D601938946500ED7488 /* FlowShader.cpp */; };
+		35BC1D671938946500ED7488 /* ofxMioFlowGLSL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 35BC1D621938946500ED7488 /* ofxMioFlowGLSL.cpp */; };
 		35EC080819349B3B00BD826F /* IpEndpointName.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 35EC07E219349B3B00BD826F /* IpEndpointName.cpp */; };
 		35EC080919349B3B00BD826F /* NetworkingUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 35EC07E719349B3B00BD826F /* NetworkingUtils.cpp */; };
 		35EC080A19349B3B00BD826F /* UdpSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 35EC07E819349B3B00BD826F /* UdpSocket.cpp */; };
@@ -186,6 +188,11 @@
 		3574C9C1193551DD00D660A4 /* ofxSliderGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxSliderGroup.h; sourceTree = "<group>"; };
 		3574C9C2193551DD00D660A4 /* ofxToggle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxToggle.cpp; sourceTree = "<group>"; };
 		3574C9C3193551DD00D660A4 /* ofxToggle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxToggle.h; sourceTree = "<group>"; };
+		35BC1D5E1938946500ED7488 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		35BC1D601938946500ED7488 /* FlowShader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FlowShader.cpp; sourceTree = "<group>"; };
+		35BC1D611938946500ED7488 /* FlowShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlowShader.h; sourceTree = "<group>"; };
+		35BC1D621938946500ED7488 /* ofxMioFlowGLSL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxMioFlowGLSL.cpp; sourceTree = "<group>"; };
+		35BC1D631938946500ED7488 /* ofxMioFlowGLSL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxMioFlowGLSL.h; sourceTree = "<group>"; };
 		35EC07E219349B3B00BD826F /* IpEndpointName.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IpEndpointName.cpp; sourceTree = "<group>"; };
 		35EC07E319349B3B00BD826F /* IpEndpointName.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IpEndpointName.h; sourceTree = "<group>"; };
 		35EC07E419349B3B00BD826F /* NetworkingUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkingUtils.h; sourceTree = "<group>"; };
@@ -583,6 +590,27 @@
 			path = src;
 			sourceTree = "<group>";
 		};
+		35BC1D551938946500ED7488 /* ofxMIOFlowGLSL */ = {
+			isa = PBXGroup;
+			children = (
+				35BC1D5E1938946500ED7488 /* README.md */,
+				35BC1D5F1938946500ED7488 /* src */,
+			);
+			name = ofxMIOFlowGLSL;
+			path = ../../../addons/ofxMIOFlowGLSL;
+			sourceTree = "<group>";
+		};
+		35BC1D5F1938946500ED7488 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				35BC1D601938946500ED7488 /* FlowShader.cpp */,
+				35BC1D611938946500ED7488 /* FlowShader.h */,
+				35BC1D621938946500ED7488 /* ofxMioFlowGLSL.cpp */,
+				35BC1D631938946500ED7488 /* ofxMioFlowGLSL.h */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
 		35EC07DD19349B3B00BD826F /* ofxOsc */ = {
 			isa = PBXGroup;
 			children = (
@@ -846,6 +874,7 @@
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				35BC1D551938946500ED7488 /* ofxMIOFlowGLSL */,
 				35067B151935DE26006AB2C8 /* ofxMacamPs3Eye */,
 				3574C9B1193551DD00D660A4 /* ofxGui */,
 				35EC07DD19349B3B00BD826F /* ofxOsc */,
@@ -1164,6 +1193,7 @@
 				35067B911935DE27006AB2C8 /* MiscTools.cpp in Sources */,
 				35067B971935DE27006AB2C8 /* Sensor.m in Sources */,
 				35067B8F1935DE27006AB2C8 /* LookUpTable.m in Sources */,
+				35BC1D661938946500ED7488 /* FlowShader.cpp in Sources */,
 				2023ef517ed2d8b397511d4bf2052690 /* Helpers.cpp in Sources */,
 				35EC080F19349B3B00BD826F /* OscReceivedElements.cpp in Sources */,
 				c602002de761f9b52db4400a48aeaa29 /* ObjectFinder.cpp in Sources */,
@@ -1201,6 +1231,7 @@
 				35067B901935DE27006AB2C8 /* MiniGraphicsTools.cpp in Sources */,
 				35EC080C19349B3B00BD826F /* UdpSocketWin.cpp in Sources */,
 				35EC080E19349B3B00BD826F /* OscPrintReceivedElements.cpp in Sources */,
+				35BC1D671938946500ED7488 /* ofxMioFlowGLSL.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1268,7 +1299,7 @@
 					../../../addons/ofxOpenCv/libs/opencv/lib,
 					../../../addons/ofxOpenCv/libs/opencv/lib/osx,
 					../../../addons/ofxOpenCv/src,
-					"\\\\\\\\\\\\\\\"$(SRCROOT)/../../../addons/ofxOsc\\\\\\\\\\\\\\\"/**",
+					"\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"$(SRCROOT)/../../../addons/ofxOsc\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"/**",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"-D__MACOSX_CORE__",
@@ -1337,7 +1368,7 @@
 					../../../addons/ofxOpenCv/libs/opencv/lib,
 					../../../addons/ofxOpenCv/libs/opencv/lib/osx,
 					../../../addons/ofxOpenCv/src,
-					"\\\\\\\\\\\\\\\"$(SRCROOT)/../../../addons/ofxOsc\\\\\\\\\\\\\\\"/**",
+					"\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"$(SRCROOT)/../../../addons/ofxOsc\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"/**",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"-D__MACOSX_CORE__",

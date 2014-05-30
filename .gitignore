@@ -10,6 +10,7 @@
 *.pyc
 .svn/
 *.log
+*.zip
 
 # IDE-specific ignore patterns
 

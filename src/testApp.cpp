@@ -110,6 +110,7 @@ void testApp::setup() {
 	tracker.setMaximumDistance(50);
 
 // Flow
+//    mioFlow.setup(camW, camH);
     mesh.setMode(OF_PRIMITIVE_TRIANGLES);
 //    stepSize = 16;
     ySteps = camPointer->getHeight() / stepSize;
@@ -153,6 +154,7 @@ void testApp::update() {
         contourFinder.findContours(thresholded);
         tracker.track(contourFinder.getBoundingRects());
         
+//        mioFlow.update(ps3Eye.getTextureReference());
         if(bSendFlow){
             flow.setWindowSize(stepSize);
             flow.calcOpticalFlow(*camPointer);
@@ -203,6 +205,12 @@ void testApp::draw() {
     thresholded.draw(0,0);
 	contourFinder.draw();
     
+//    ofBackground(0);
+//    mioFlow.drawReposition(0,0);
+//	mioFlow.drawFlowGridRaw(640,0);
+//	mioFlow.drawFlowGrid(0,480);
+//	ofSetColor(255);
+//	ofDrawBitmapString("oi -> " + ofToString(ofGetFrameRate()),20,20,0);
 
     vector<Glow>& followers = tracker.getFollowers();
     for(int i = 0; i < followers.size(); i++) {
@@ -219,7 +227,8 @@ void testApp::draw() {
         }
     }
     
-    oscSendFlow();
+    if(bSendFlow)
+        oscSendFlow();
     
     skiped++;
     if(skiped > skipSample) skiped = 0;
