@@ -172,11 +172,10 @@ void testApp::draw() {
 	contourFinder.draw();
 
     vector<Glow>& followers = tracker.getFollowers();
-    if(bSendCenters && (skiped ==0) ){
-        for(int i = 0; i < followers.size(); i++) {
-            followers[i].draw();
+    for(int i = 0; i < followers.size(); i++) {
+        followers[i].draw();
+        if(bSendCenters && skiped ==0)
             oscSendCur(followers[i]);
-        }
     }
     
     if(bSendTargetDetail && (skiped ==0)){
@@ -399,10 +398,13 @@ void testApp::oscSendContour(int label, const ofPolyline &polyline){
     m.addIntArg(rect.getTopLeft().y);
     m.addIntArg(rect.getBottomRight().x);
     m.addIntArg(rect.getBottomRight().y);
+    ofPolyline newLine = polyline.getResampledByCount(100);
+    cout<<"resized to "<<newLine.size()<<endl;
+//    newLine.draw();
     
     if(bSendContours){
-        const vector<ofPoint> points = polyline.getVertices();
-        for(int i=0; i< size; i++){
+        const vector<ofPoint> points = newLine.getVertices();
+        for(int i=0; i< newLine.size(); i++){
             m.addFloatArg(points[i].x);
             m.addFloatArg(points[i].y);
         }
