@@ -111,9 +111,9 @@ void testApp::setup() {
 
 // Flow
     mesh.setMode(OF_PRIMITIVE_TRIANGLES);
-    stepSize = 16;
-    ySteps = cam.getHeight() / stepSize;
-    xSteps = cam.getWidth() / stepSize;
+//    stepSize = 16;
+    ySteps = camPointer->getHeight() / stepSize;
+    xSteps = camPointer->getWidth() / stepSize;
     for(int y=0; y< ySteps; y++){
         for(int x=0; x<xSteps; x++){
             mesh.addVertex(ofVec2f(x*stepSize, y*stepSize));
@@ -146,13 +146,32 @@ void testApp::update() {
     camPointer->update();
     if(camPointer->isFrameNew()){
         background.update(*camPointer, thresholded);
+        
         thresholded.update();
-		blur(thresholded, 10);
+        blur(thresholded, 10);
         thresholded.update();
-		contourFinder.findContours(thresholded);
-		tracker.track(contourFinder.getBoundingRects());
+        contourFinder.findContours(thresholded);
+        tracker.track(contourFinder.getBoundingRects());
+        
+        if(bSendFlow){
+            flow.setWindowSize(stepSize);
+            flow.calcOpticalFlow(*camPointer);
+            int i = 0;
+            float distortionStrength = 2;
+            for(int y = 1; y + 1 < ySteps; y++) {
+                for(int x = 1; x + 1 < xSteps; x++) {
+                    int i = y * xSteps + x;
+                    ofVec2f position(x * stepSize, y * stepSize);
+                    ofRectangle area(position - ofVec2f(stepSize, stepSize) / 2, stepSize, stepSize);
+                    ofVec2f offset = flow.getAverageFlowInRegion(area);
+                    mesh.setVertex(i, position + distortionStrength * offset);
+                    i++;
+                }
+            }
+        }
+        
     }
-    
+        
     
 
     //	movie.update();
@@ -165,13 +184,25 @@ void testApp::update() {
 
 void testApp::draw() {	
 	ofSetColor(255);
-    if(bUsePS3Eye)
-        ps3Eye.draw(camW, 0);
-    else
-        cam.draw(camW,0);
+    ofPushMatrix();
+    ofTranslate(camW, 0, 0);
     
+    if(bUsePS3Eye){
+        ps3Eye.draw(0, 0);
+//        ps3Eye.getTextureReference().bind();
+//        mesh.draw();
+//        ps3Eye.getTextureReference().unbind();
+    }
+    else{
+        cam.draw(camW,0);
+//        cam.getTextureReference().bind();
+//        mesh.draw();
+//        cam.getTextureReference().unbind();
+    }
+    ofPopMatrix();
     thresholded.draw(0,0);
 	contourFinder.draw();
+    
 
     vector<Glow>& followers = tracker.getFollowers();
     for(int i = 0; i < followers.size(); i++) {
@@ -187,6 +218,8 @@ void testApp::draw() {
             oscSendContour(label, contours[i]);
         }
     }
+    
+    oscSendFlow();
     
     skiped++;
     if(skiped > skipSample) skiped = 0;
@@ -226,6 +259,8 @@ void testApp::setupGui() {
     gui.add(bSendCenters.set("Send Centers", false));
     gui.add(bSendTargetDetail.set("Send Target Detail", false));
     gui.add(bSendContours.set("Send Contours", false));
+    gui.add(bSendFlow.set("Send Flow", false));
+    
     gui.add(skipSample.set("Skip Sample", 10, 0, 60));
     gui.add(oscHost.set("OSC Host", "127.0.0.1"));
     
@@ -414,6 +449,32 @@ void testApp::oscSendContour(int label, const ofPolyline &polyline){
     sender.sendMessage(m);
 }
 
+void testApp::oscSendFlow(){
+    ofxOscMessage m;
+    stringstream ss;
+    ss<<"/flow";
+    m.setAddress(ss.str());
+    
+    m.addIntArg(xSteps);
+    m.addIntArg(ySteps);
+    
+    int i = 0;
+    for(int y = 1; y + 1 < ySteps; y++) {
+        for(int x = 1; x + 1 < xSteps; x++) {
+            int i = y * xSteps + x;
+            ofVec2f position(x * stepSize, y * stepSize);
+            ofVec2f offset = mesh.getVertex(i);
+            ofLine(position.x, position.y, offset.x, offset.y);
+            offset -= position;
+            m.addFloatArg(offset.x);
+            m.addFloatArg(offset.y);
+            i++;
+        }
+    }
+    if(skiped==0)
+        sender.sendMessage(m);
+}
+
 void testApp::keyPressed(int key){
     switch(key){
         case ' ':
@@ -431,16 +492,7 @@ void testApp::onAutoGainAndShutterChange(bool & value){
     bPs3AutoExposure = value;
     cout<<"autoexposure is "<<bPs3AutoExposure<<endl;
 }
-//void testApp::onSendCenters(bool &value){
-//    bSendCenters = value;
-//}
 
-//void testApp::onSendTargetDetail(bool &value){
-//    bSendTargetDetail = value;
-//}
-//void testApp::onSendContours(bool &value){
-//    bSendContours = value;
-//}
 //--------------------------------------------------------------
 void testApp::onGainChange(float & value){
     cout<<"calling gain change"<<endl;

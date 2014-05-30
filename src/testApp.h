@@ -63,7 +63,8 @@ public:
 //    Flow
     ofxCv::FlowFarneback flow;
     ofMesh mesh;
-    int stepSize, xSteps, ySteps;
+    int stepSize=32;
+    int xSteps, ySteps;
     
     bool bPs3AutoExposure = false;
     void onAutoGainAndShutterChange(bool & value);
@@ -84,6 +85,7 @@ public:
     ofParameter<bool> bSendCenters = false;
     ofParameter<bool> bSendTargetDetail = false;
     ofParameter<bool> bSendContours = false;
+    ofParameter<bool> bSendFlow = false;
     ofParameter<int> skipSample = 10;
     ofParameter <string> oscHost;
     
@@ -120,4 +122,5 @@ public:
     ofxOscSender sender;
     void oscSendCur(Glow & follower);
     void oscSendContour(int label, const ofPolyline & polyline);
+    void oscSendFlow();
 };

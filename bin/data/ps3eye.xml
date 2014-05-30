@@ -9,10 +9,10 @@
 	<Flicker_Type>0</Flicker_Type>
 	<White_Balance_Mode>4</White_Balance_Mode>
 	<LED>1</LED>
-	<Blob_Min_Radius>40</Blob_Min_Radius>
+	<Blob_Min_Radius>130</Blob_Min_Radius>
 	<Blob_Max_Radius>280</Blob_Max_Radius>
 <PS3Eye/>
-<FPS>29.5759</FPS>
+<FPS>7.75705</FPS>
 	<show_gui__G_>1</show_gui__G_>
 	<Send_Centers>0</Send_Centers>
 	<Send_Target_Detail>0</Send_Target_Detail>
@@ -20,4 +20,5 @@
 	<Learning_Time>900</Learning_Time>
 	<Skip_Sample>10</Skip_Sample>
 	<OSC_Host>127.0.0.1</OSC_Host>
+<Send_Flow>0</Send_Flow>
 </PS3Eye>
