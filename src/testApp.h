@@ -44,8 +44,9 @@ public:
     bool bUsePS3Eye = true;
     int camH=480;           //on some machine, PS3 eye doesn't work with 320x240!!!
     int camW=640;
-    int fieldW=320;
-    int fieldH=240;
+    int shrinkRatio = 4;
+    int fieldW=camW/shrinkRatio;
+    int fieldH=camH/shrinkRatio;
 //    float camGain = 0.2;
 //    float camShutter = 1.0;
     float camHue = 0.5;
@@ -63,9 +64,10 @@ public:
 
 //    Flow
     ofxMioFlowGLSL mioFlow;
+    ofImage flowImage;
     ofxCv::FlowFarneback flow;
     ofMesh mesh;
-    int stepSize=32;
+    int stepSize=8;
     int xSteps, ySteps;
     
     bool bPs3AutoExposure = false;

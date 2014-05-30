@@ -94,6 +94,8 @@ void testApp::setup() {
         camPointer = &cam;
     }
     
+    thresholded.allocate(camW, camH, OF_IMAGE_COLOR);
+//    flowImage.allocate(fieldW, fieldH, OF_IMAGE_COLOR);
     background.setLearningTime(learnTime); //default to 900
     background.setThresholdValue(10);
     
@@ -113,8 +115,8 @@ void testApp::setup() {
 //    mioFlow.setup(camW, camH);
     mesh.setMode(OF_PRIMITIVE_TRIANGLES);
 //    stepSize = 16;
-    ySteps = camPointer->getHeight() / stepSize;
-    xSteps = camPointer->getWidth() / stepSize;
+    ySteps = fieldH / stepSize;
+    xSteps = fieldW / stepSize;
     for(int y=0; y< ySteps; y++){
         for(int x=0; x<xSteps; x++){
             mesh.addVertex(ofVec2f(x*stepSize, y*stepSize));
@@ -156,8 +158,17 @@ void testApp::update() {
         
 //        mioFlow.update(ps3Eye.getTextureReference());
         if(bSendFlow){
+            
+            
             flow.setWindowSize(stepSize);
-            flow.calcOpticalFlow(*camPointer);
+            
+            flowImage.allocate(camW, camH, OF_IMAGE_COLOR);
+            flowImage.setFromPixels(camPointer->getPixels(), camW, camH, OF_IMAGE_COLOR);
+            flowImage.resize(fieldW, fieldH);
+            flowImage.update();
+            flow.calcOpticalFlow(flowImage.getPixelsRef());
+            
+//            flow.calcOpticalFlow(*camPointer);
             int i = 0;
             float distortionStrength = 2;
             for(int y = 1; y + 1 < ySteps; y++) {
@@ -196,7 +207,7 @@ void testApp::draw() {
 //        ps3Eye.getTextureReference().unbind();
     }
     else{
-        cam.draw(camW,0);
+        cam.draw(0,0);
 //        cam.getTextureReference().bind();
 //        mesh.draw();
 //        cam.getTextureReference().unbind();
@@ -473,10 +484,10 @@ void testApp::oscSendFlow(){
             int i = y * xSteps + x;
             ofVec2f position(x * stepSize, y * stepSize);
             ofVec2f offset = mesh.getVertex(i);
-            ofLine(position.x, position.y, offset.x, offset.y);
+            ofLine(position.x*shrinkRatio, position.y*shrinkRatio, offset.x*shrinkRatio, offset.y*shrinkRatio);
             offset -= position;
-            m.addFloatArg(offset.x);
-            m.addFloatArg(offset.y);
+            m.addFloatArg(offset.x*shrinkRatio);
+            m.addFloatArg(offset.y*shrinkRatio);
             i++;
         }
     }
@@ -491,6 +502,9 @@ void testApp::keyPressed(int key){
             break;
         case 'G':
             toggleGuiDraw = !toggleGuiDraw;
+            break;
+        case 'f':
+            flow.resetFlow();
             break;
     }
 }
